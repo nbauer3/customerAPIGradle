@@ -13,7 +13,7 @@ public class CustomerRepo
 	private Customer cust2 = new Customer("Matt", "m@bah.com", "password2");
 	private Customer cust3 = new Customer("Mike", "mike@bah.com", "password3");
 	private Customer cust4 = new Customer("Timmy", "timmy@bah.com", "password4");
-	private Customer cust5 = new Customer("Mitch", "mitch@bah.com", "password5");
+	private Customer cust5 = new Customer("Mitch", "mitch@bah.com", "password5555");
 	
 	private ArrayList<Customer> list = new ArrayList<Customer>();
 	
