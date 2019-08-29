@@ -6,6 +6,14 @@ public class Customer
 	public String email;
 	public String password;
 	
+	//For deserialisation purposes, Customer must have a zero-arg constructor
+	public Customer()
+	{
+		name = "null";
+		email = "null";
+		password = "null";
+	}
+	
 	public Customer(String name, String email, String password)
 	{
 		super();

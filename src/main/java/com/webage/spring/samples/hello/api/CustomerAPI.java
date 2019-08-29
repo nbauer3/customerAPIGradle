@@ -1,60 +1,85 @@
 package com.webage.spring.samples.hello.api;
 
-import java.util.ArrayList;
+import java.net.URI;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import com.webage.spring.samples.hello.repo.CustomerRepo;
 
 @RestController
+@RequestMapping("/Customer")
 public class CustomerAPI
 {
-	private Customer cust1 = new Customer("Nick", "nb@bah.com", "password");
-	private Customer cust2 = new Customer("Matt", "m@bah.com", "password2");
-	private Customer cust3 = new Customer("Mike", "mike@bah.com", "password3");
-	
-	private ArrayList<Customer> list = new ArrayList<Customer>();	
+	@Autowired
+	private CustomerRepo custRepo;
 
-	@GetMapping("/Customer")
-	public Customer getMessage()
+	//GET @ http://localhost:8080/Customer
+	@GetMapping
+	public Iterable<Customer> iterate()
 	{
-		return new Customer("Nick", "nb@bah.com", "password");
+		return custRepo.getAllCustomers();
 	}
 	
-	@GetMapping("/Customer/all")
-	public ArrayList<Customer> getAll()
+	//GET @ http://localhost:8080/Customer/name/<insert name>
+	@GetMapping("/name/{name}")
+	public Customer getByName(@PathVariable("name") String custName)
 	{
-		list.add(cust1);
-		list.add(cust2);
-		list.add(cust3);
-		
-		return list;
+		return custRepo.getCustomerByName(custName);
 	}
 	
-	@GetMapping("/Customer/name/{name}")
-	public Customer getCustomerByName(@PathVariable String name)
+	//GET @ http://localhost:8080/Customer/email/<insert email>
+	@GetMapping("/email/{email}")
+	public Customer getByEmail(@PathVariable("email") String custEmail)
 	{
-		for(int i = 0; i <= list.size(); i++)
+		return custRepo.getCustomerByEmail(custEmail);
+	}
+	
+	//POST @ http://localhost:8080/Customer
+	@PostMapping
+	public ResponseEntity<?> addCustomer(@RequestBody Customer newCustomer, UriComponentsBuilder uri)
+	{
+		if (newCustomer.getName() == null || newCustomer.getEmail() == null)
 		{
-			if(list.get(i).name.equals(name))
-			{
-				return list.get(i);
-			}
+			return ResponseEntity.badRequest().build();
 		}
-		return null;
+		newCustomer = custRepo.save(newCustomer);
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{name}")
+				.buildAndExpand(newCustomer.getName()).toUri();
+		ResponseEntity<?> response = ResponseEntity.created(location).build();
+		return response;
 	}
 	
-	@GetMapping("/Customer/email/{email}")
-	public Customer getCustomerByEmail(@PathVariable String email)
+	//PUT @ http://localhost:8080/Customer/name/<insert name>
+	@PutMapping("/name/{name}")
+	public ResponseEntity<?> putCustomerByName(@RequestBody Customer newCustomer, @PathVariable("name") String custName)
 	{
-		for(int i = 0; i <= list.size(); i++)
-		{			
-			if(list.get(i).email.equals(email))
-			{
-				return list.get(i);
-			}
+		if (newCustomer.getName() == custName || newCustomer.getName() == null || newCustomer.getName() == null)
+		{
+			return ResponseEntity.badRequest().build();
 		}
-		return null;
+		newCustomer = custRepo.save(newCustomer);
+		return ResponseEntity.ok().build();
 	}
 	
+	//PUT @ http://localhost:8080/Customer/email/<insert email>
+	@PutMapping("/email/{email}")
+	public ResponseEntity<?> putCustomerByEmail(@RequestBody Customer newCustomer, @PathVariable("email") String custEmail)
+	{
+		if (newCustomer.getEmail() == custEmail || newCustomer.getEmail() == null || newCustomer.getEmail() == null)
+		{
+			return ResponseEntity.badRequest().build();
+		}
+		newCustomer = custRepo.save(newCustomer);
+		return ResponseEntity.ok().build();
+	}
 }
