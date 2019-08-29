@@ -1,26 +1,42 @@
 package com.webage.spring.samples.hello.api;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="CUSTOMERS")
 public class Customer 
 {
-	public String name;
-	public String email;
-	public String password;
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	long id;
 	
-	//For deserialisation purposes, Customer must have a zero-arg constructor
-	public Customer()
-	{
-		name = "null";
-		email = "null";
-		password = "null";
-	}
+	@Column(name="CUSTOMER_NAME")
+	private String name;
+	private String email;
+	private String password;
 	
-	public Customer(String name, String email, String password)
-	{
-		super();
-		this.name = name;
-		this.email = email;
-		this.password = password;
+	/*
+	 * //For deserialisation purposes, Customer must have a zero-arg constructor
+	 * public Customer() { name = "null"; email = "null"; password = "null"; }
+	 */
+	
+	public long getId() {
+		return id;
 	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	/*
+	 * public Customer(String name, String email, String password) { super();
+	 * this.name = name; this.email = email; this.password = password; }
+	 */
 
 	public String getName() {
 		return name;
