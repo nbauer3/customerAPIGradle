@@ -50,7 +50,7 @@ public class CustomerAPI
 	}
 	
 	//GET @ http://localhost:8080/Customer/ <insert id>
-	
+	//returns customer by ID
 	@GetMapping("/{id}")
 	public Customer getById(@PathVariable("id") long custID)
 	{
@@ -91,7 +91,7 @@ public class CustomerAPI
 	}
 	
 	//DELETE @ http://localhost:8080/Customer/name/<insert name>
-	//id doesn't reset
+	//deletes customer by name BUT id doesn't reset
 	@DeleteMapping("/name/{name}")
 	public ResponseEntity<?> deleteCustomer(@PathVariable String name)
 	{
